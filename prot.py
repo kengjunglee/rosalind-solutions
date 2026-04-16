@@ -26,7 +26,7 @@ output: protein string
 def translate(rna:str) -> str:
     p = []
     n = len(rna)
-    for i in range(0, n, 3):
+    for i in range(0, n-2, 3):
         codon = rna[i:i+3]
         if codon in CODON_TABLE:
             if CODON_TABLE[codon] == "": #stop_codon

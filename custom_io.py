@@ -37,3 +37,79 @@ def parse_alphabet_and_int(caller_file):
     alphabet = lines[0].split()
     n = int(lines[1])
     return alphabet, n
+
+
+def parse_fasta(caller_file: str) -> list[tuple[str, str]]:
+    """Parse a FASTA-formatted dataset.txt from the same directory as the calling script.
+
+    Args:
+        caller_file: The __file__ variable of the calling script.
+
+    Returns:
+        A list of (label, sequence) tuples, one per FASTA record.
+    """
+    text = read_dataset(caller_file)
+    sequences: list[tuple[str, str]] = []
+    label: str | None = None
+    seq_parts: list[str] = []
+
+    for line in text.split("\n"):
+        if line.startswith(">"):
+            if label is not None:
+                sequences.append((label, "".join(seq_parts)))
+            label = line[1:]
+            seq_parts = []
+        else:
+            seq_parts.append(line)
+
+    if label is not None:
+        sequences.append((label, "".join(seq_parts)))
+
+    return sequences
+
+
+def parse_strings(caller_file: str) -> list[str]:
+    """Parse a list of strings, one per line, from dataset.txt.
+
+    Args:
+        caller_file: The __file__ variable of the calling script.
+
+    Returns:
+        A list of strings, one per line.
+    """
+    text = read_dataset(caller_file)
+    return text.split("\n")
+
+
+def parse_ints(caller_file: str) -> list[int]:
+    """Parse a single line of space-separated integers from dataset.txt.
+
+    Args:
+        caller_file: The __file__ variable of the calling script.
+
+    Returns:
+        A list of integers.
+    """
+    text = read_dataset(caller_file)
+    result = []
+    for token in text.split():
+        result.append(int(token))
+    return result
+
+
+def parse_string_and_floats(caller_file: str) -> tuple[str, list[float]]:
+    """Parse a DNA string (line 1) and space-separated floats (line 2) from dataset.txt.
+
+    Args:
+        caller_file: The __file__ variable of the calling script.
+
+    Returns:
+        A tuple of (dna_string, list_of_floats).
+    """
+    text = read_dataset(caller_file)
+    lines = text.split("\n")
+    dna = lines[0]
+    floats = []
+    for token in lines[1].split():
+        floats.append(float(token))
+    return dna, floats
